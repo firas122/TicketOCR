@@ -1,35 +1,60 @@
 import flask
+import pymongo
 import ocr
-from flask import jsonify
-from flask import Flask, render_template, request
-from werkzeug import secure_filename
+from flask import request
+import ocrutlis
+from datetime import datetime
 
-import json
-from json import JSONEncoder
-
+now = datetime.now()
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
-
-@app.route('/upload')
-def upload_file():
-    return render_template('upload.html')
+dictionnary = {}
+try:
+    client = pymongo.MongoClient("mongodb://firas:islamislam1@cluster0-shard-00-00.u4hst.mongodb.net:27017,cluster0-shard-00-01.u4hst.mongodb.net:27017,cluster0-shard-00-02.u4hst.mongodb.net:27017/?ssl=true&replicaSet=atlas-10d9tg-shard-0&authSource=admin&retryWrites=true&w=majority")
+    db = client.API_Tickets
+    T = db.ticketsData
+except:
+    print("cannot connect")
 
 @app.route('/do', methods=['GET', 'POST'])
 
 def home():
-       #UPLOAD PICTURE AND GET PATH TO PASS IN ARGS TO
     if request.method == 'POST':
-        f = request.files['file']
-        f.save(secure_filename(f.filename))
-        p = f.filename
-        print(p)
+        p = request.form.get('url')
+        user_nom = request.form.get('user_nom')
+        user_prenom = request.form.get('user_prenom')
+        user_email = request.form.get('user_email')
+        user_date_naissance = request.form.get('user_date_naissance')
+        user_genre = request.form.get('user_genre')
+        userobj =  {"nom":user_nom,
+                    "prenom":user_prenom,
+                    "email":user_email,"date_naissance":user_date_naissance,"genre":user_genre}
+
         resultTraitement = ocr.traitement(p)
-        result = dict(name=resultTraitement.name, total=resultTraitement.total, rest=resultTraitement.rest,
-                      products=resultTraitement.tup)
+        if hash(resultTraitement) in dictionnary.keys():
+            return ({"Error122":"Ticket is already scanned"})
+        else:
+            dictionnary.update({hash(resultTraitement): resultTraitement.marketid})
+        resultTraitement.tup = ocrutlis.autocorrect(resultTraitement.tup)
+        result = dict(name=resultTraitement.name, total=resultTraitement.total, products=resultTraitement.tup, date=resultTraitement.date, time=resultTraitement.time)
+        try:
+            T.insert_one({"name": resultTraitement.name,
+                          "total": resultTraitement.total,
+                          "products": resultTraitement.tup,
+                          "date": resultTraitement.date,
+                          "time": resultTraitement.time,
+                          "ticket_image_url": p,
+                          "userobj": userobj,
+                          "extractiondate": now.strftime("%m/%d/%Y, %H:%M:%S")})
+
+            print("insert success")
+        except:
+            print("coudnt insert object to mongodb atlas")
         return result
-        #return 'okkaay man'
+
+        return({"E0011":"verify ticket image (assure enough lightening and clear shot)"})
+
     if __name__ == '__main__':
-        app.run(debug=True)
+        app.run(host='0.0.0.0', debug=True)
 
-
-app.run()
+app.run(host='0.0.0.0')
