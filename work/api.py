@@ -10,7 +10,7 @@ app = flask.Flask(__name__)
 app.config["DEBUG"] = True
 dictionnary = {}
 try:
-    client = pymongo.MongoClient("mongodb://firas:islamislam1@cluster0-shard-00-00.u4hst.mongodb.net:27017,cluster0-shard-00-01.u4hst.mongodb.net:27017,cluster0-shard-00-02.u4hst.mongodb.net:27017/?ssl=true&replicaSet=atlas-10d9tg-shard-0&authSource=admin&retryWrites=true&w=majority")
+    client = pymongo.MongoClient("mongo connection string here")
     db = client.API_Tickets
     T = db.ticketsData
 except:
