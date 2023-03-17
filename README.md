@@ -92,22 +92,7 @@ Before we proceed , this project was designed to run those different tasks :
 4. Data Classification
 5. Return a well-structured JSON object
 <br /><br />
-### Prerequisites
 
-This is a list of different main modules to install before implementing our project
-* Python
-  ```sh
-  npm install npm@latest -g
-  ```
-* pip
-  ```sh
-  npm install npm@latest -g
-  ```
-* Tesseract
-  ```sh
-  npm install npm@latest -g
-  ```
-<br /><br />
 ### Installation
 
 _Below is an example of how you can instruct your audience on installing and setting up your app. This template doesn't rely on any external dependencies or services._
