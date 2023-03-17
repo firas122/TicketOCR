@@ -92,21 +92,7 @@ Before we proceed , this project was designed to run those different tasks :
 4. Data Classification
 5. Return a well-structured JSON object
 <br /><br />
-### Prerequisites
 
-This is a list of different main modules to install before implementing our project
-* Python
-  ```sh
-  npm install npm@latest -g
-  ```
-* pip
-  ```sh
-  npm install npm@latest -g
-  ```
-* Tesseract
-  ```sh
-  npm install npm@latest -g
-  ```
 <br /><br />
 ### Installation
 
