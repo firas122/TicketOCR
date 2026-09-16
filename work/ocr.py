@@ -1,3 +1,5 @@
+import os
+
 import cv2
 import numpy as np
 import pytesseract
@@ -8,6 +10,8 @@ import ocrutlis
 import pattrn
 from wand.image import Image as Im
 import extract
+
+
 def traitement(path):
 
     with urllib.request.urlopen(path) as url:
@@ -20,22 +24,15 @@ def traitement(path):
     ocrutlis.correct_skew(img)
     widthImg = 540
     heightImg = 740
-    #img = cv2.imread(path)
     img = cv2.resize(img, (widthImg, heightImg))
-    #cv2.imshow("src img", img)
-    #cv2.waitKey(0)
-    pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files (x86)\Tesseract-OCR\tesseract.exe"
-    #C:\Program Files\Tesseract-OCR\tesseract.exe
-    #/usr/bin/tesseract
+    pytesseract.pytesseract.tesseract_cmd = os.environ.get(
+        "TESSERACT_CMD", "tesseract"
+    )
     pimg = ocrutlis.Processing(img)
-    pimg1 = ocrutlis.Processing1  (img)
+    pimg1 = ocrutlis.Processing1(img)
     pimg2 = ocrutlis.Processing2(img)
     pimg3 = ocrutlis.Processing3(img)
     custom_config = r'--oem 3 --psm 6 tessedit_char_blacklist=aA'
-    # cv2.imshow("src img1", img)
-    # cv2.imshow("src img2", pimg)
-    # cv2.imshow("src img3", pimg1)
-    # cv2.waitKey(0)
 
     x1 = pytesseract.image_to_string(img, lang='eng+fra', config=custom_config)
     x2 = pytesseract.image_to_string(pimg, lang='eng+fra', config=custom_config)
@@ -43,7 +40,6 @@ def traitement(path):
     x4 = pytesseract.image_to_string(pimg2, lang='eng+fra', config=custom_config)
     x5 = pytesseract.image_to_string(pimg3, lang='eng+fra', config=custom_config)
     x6 = extract.treat(path)
-    # print(x1)
     searchObj1 = re.search(r'MONOPR', x1)
     searchObj2 = re.search(r'MONOPR', x2)
     searchObj3 = re.search(r'MONOPR', x3)
@@ -57,9 +53,8 @@ def traitement(path):
         r2 = pattrn.pattrMonoprix(x2)
         r3 = pattrn.pattrMonoprix(x3)
         r4 = pattrn.pattrMonoprix(x4)
-        d = {'r1': len(r1.tup), 'r2': len(r2.tup), 'r3': len(r3.tup), 'r4': len(r4.tup)}
-        l = max(d, key=d.get)
-        r = eval(l)
+        candidates = {'r1': r1, 'r2': r2, 'r3': r3, 'r4': r4}
+        r = max(candidates.values(), key=lambda c: len(c.tup))
 
     searchObj1 = re.search(r'CARREFOUR', x1)
     searchObj2 = re.search(r'CARREFOUR', x2)
@@ -74,9 +69,8 @@ def traitement(path):
         r3 = pattrn.pattrcarrf(x3)
         r4 = pattrn.pattrcarrf(x4)
         r6 = pattrn.pattrcarrf(x6)
-        d = {'r1': len(r1.tup), 'r2': len(r2.tup), 'r3': len(r3.tup), 'r4': len(r4.tup), 'r6': len(r6.tup)}
-        l = max(d, key=d.get)
-        r = eval(l)
+        candidates = {'r1': r1, 'r2': r2, 'r3': r3, 'r4': r4, 'r6': r6}
+        r = max(candidates.values(), key=lambda c: len(c.tup))
 
     searchObj1 = re.search(r'AZIZA', x1)
     searchObj2 = re.search(r'AZIZA', x2)
@@ -91,9 +85,8 @@ def traitement(path):
         r3 = pattrn.pattraziza(x3)
         r4 = pattrn.pattraziza(x4)
         r6 = pattrn.pattraziza(x6)
-        d = {'r1': len(r1.tup), 'r2': len(r2.tup), 'r3': len(r3.tup), 'r4': len(r4.tup), 'r6': len(r6.tup)}
-        l = max(d, key=d.get)
-        r = eval(l)
+        candidates = {'r1': r1, 'r2': r2, 'r3': r3, 'r4': r4, 'r6': r6}
+        r = max(candidates.values(), key=lambda c: len(c.tup))
 
     searchObj1 = re.search(r'CITY MARKET', x1)
     searchObj2 = re.search(r'CITY MARKET', x2)
@@ -107,8 +100,7 @@ def traitement(path):
         r2 = pattrn.pattrcitymarket(x2)
         r3 = pattrn.pattrcitymarket(x3)
         r4 = pattrn.pattrcitymarket(x4)
-        d = {'r1': len(r1.tup), 'r2': len(r2.tup), 'r3': len(r3.tup), 'r4': len(r4.tup)}
-        l = max(d, key=d.get)
-        r = eval(l)
+        candidates = {'r1': r1, 'r2': r2, 'r3': r3, 'r4': r4}
+        r = max(candidates.values(), key=lambda c: len(c.tup))
 
     return r
