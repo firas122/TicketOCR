@@ -4,11 +4,10 @@ RUN apt-get -y install tesseract-ocr
 RUN apt-get -y install libtesseract-dev
 COPY . /app
 WORKDIR /app
+RUN apt-get -y install libmagickwand-dev
 RUN pip3 install --upgrade setuptools pip
 RUN pip3 install scikit-build
 RUN pip3 install cmake
-RUN pip3 install pytesseract
-RUN pip3 install tesseract
-RUN pip3 install -r requirement.txt
+RUN pip3 install -r requirements.txt
 ENTRYPOINT ["python"]
 CMD ["api.py"]

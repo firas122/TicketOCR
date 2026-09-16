@@ -1,0 +1,13 @@
+flask==2.2.5
+werkzeug==2.2.3
+pymongo==4.6.1
+numpy==1.26.4
+opencv-python==4.9.0.80
+pytesseract==0.3.10
+Pillow==10.2.0
+Wand==0.6.13
+fuzzywuzzy==0.18.0
+python-Levenshtein==0.25.0
+scipy==1.12.0
+requests==2.31.0
+python-dotenv==1.0.1
