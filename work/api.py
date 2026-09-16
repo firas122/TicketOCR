@@ -1,3 +1,5 @@
+import os
+
 import flask
 import pymongo
 import ocr
@@ -7,17 +9,17 @@ from datetime import datetime
 
 now = datetime.now()
 app = flask.Flask(__name__)
-app.config["DEBUG"] = True
+app.config["DEBUG"] = os.environ.get("FLASK_DEBUG", "false").lower() == "true"
 dictionnary = {}
 try:
-    client = pymongo.MongoClient("mongo connection string here")
+    client = pymongo.MongoClient(os.environ["MONGO_URI"])
     db = client.API_Tickets
     T = db.ticketsData
-except:
-    print("cannot connect")
+except Exception as e:
+    print(f"cannot connect to MongoDB: {e}")
+
 
 @app.route('/do', methods=['GET', 'POST'])
-
 def home():
     if request.method == 'POST':
         p = request.form.get('url')
@@ -48,13 +50,12 @@ def home():
                           "extractiondate": now.strftime("%m/%d/%Y, %H:%M:%S")})
 
             print("insert success")
-        except:
-            print("coudnt insert object to mongodb atlas")
+        except Exception as e:
+            print(f"could not insert object into MongoDB Atlas: {e}")
         return result
 
-        return({"E0011":"verify ticket image (assure enough lightening and clear shot)"})
+    return {"E0011": "verify ticket image (assure enough lightening and clear shot)"}
 
-    if __name__ == '__main__':
-        app.run(host='0.0.0.0', debug=True)
 
-app.run(host='0.0.0.0')
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', debug=app.config["DEBUG"])

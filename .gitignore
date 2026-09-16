@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.env
+venv/
+.venv/
+.idea/
+
+# runtime scratch files written by the OCR pipeline
+work/temp.jpeg
+work/temp.jpg
+work/morph-dilate.jpeg

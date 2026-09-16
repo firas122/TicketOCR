@@ -1,3 +1,5 @@
+import os
+
 import cv2
 import numpy as np
 import pymongo
@@ -12,7 +14,7 @@ heightImg = 740
 
 def autocorrect(tup):
     p = []
-    client = pymongo.MongoClient("REDACTED-CREDENTIAL,pfe-shard-00-01.di1sy.mongodb.net:27017,pfe-shard-00-02.di1sy.mongodb.net:27017/?ssl=true&replicaSet=atlas-2c3pjn-shard-0&authSource=admin&retryWrites=true&w=majority")
+    client = pymongo.MongoClient(os.environ["MONGO_URI"])
     db = client.pfe
     products = db.products.find({}, {"_id": 1, "name": 1})
     a = db.products.count_documents({})
@@ -28,27 +30,9 @@ def autocorrect(tup):
     return tup
 
 
-# def set_image_dpi(file_path):
-#     im = Image.open(file_path)
-#     length_x, width_y = im.size
-#     factor = min(1, float(1024.0 / length_x))
-#     size = int(factor * length_x), int(factor * width_y)
-#     im_resized = im.resize(size, Image.ANTIALIAS)
-#     temp_file = temp_file.NamedTemporaryFile(delete=False,   suffix='.png')
-#     temp_filename = temp_file.name
-#     im_resized.save(temp_filename, dpi=(300, 300))
-#     return temp_filename
-
 def Processing(img):
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    # imgAdaptiveThre = cv2.adaptiveThreshold(imgWarpGray, 250, 1, 1, 5, 3)
-    # imgAdaptiveThre = cv2.bitwise_not(img)
-    # imgAdaptiveThre = cv2.medianBlur(img, 3)
-    # kernel = np.ones((3, 3), np.uint8)
-    # img = cv2.dilate(img, kernel, iterations=1)
     ret2, img = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-    # cv2.imshow("Process", img)
-    # cv2.waitKey(0)
     return img
 
 
@@ -59,22 +43,13 @@ def Processing1(img):
     kernel = np.ones((3, 3))
     img = cv2.dilate(img, kernel, iterations=1)
     img = cv2.erode(img, kernel, iterations=1)
-    # cv2.imshow("Process1", img)
-    # cv2.waitKey(0)
     return img
 
 
 def Processing2(img):
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     img = cv2.GaussianBlur(img, (3, 3), 1)
-    # imgAdaptiveThre = cv2.adaptiveThreshold(imgWarpGray, 250, 1, 1, 5, 3)
-    # imgAdaptiveThre = cv2.bitwise_not(img)
-    # imgAdaptiveThre = cv2.medianBlur(img, 3)
-    # kernel = np.ones((3, 3), np.uint8)
-    # img = cv2.dilate(img, kernel, iterations=1)
     ret2, img = cv2.threshold(img, 0, 127, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-    # cv2.imshow("Process2", img)
-    # # cv2.waitKey(0)
     return img
 
 
@@ -85,25 +60,12 @@ def Processing3(img):
     img = np.array(Image.open('morph-dilate.jpeg'))
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     ret2, img = cv2.threshold(img, 0, 127, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-    cv2.imshow("Process3", img)
-    cv2.waitKey(0)
     return img
 
 
 def preProcessing(img):
-    # imgGray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-    # imgBlur = cv2.GaussianBlur(imgGray,(5,5),1)
-    # imgCanny = cv2.Canny(imgBlur,200,200)
-    # kernel = np.ones((5,5))
-    # imgDial = cv2.dilate(imgCanny,kernel,iterations=2)
-    # imgThres = cv2.erode(imgDial,kernel,iterations=1)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    # kernel = np.ones((1, 1), np.uint8)
-    # img = cv2.dilate(img, kernel, iterations=1)
-    # img = cv2.erode(img, kernel, iterations=1)
     ret2, img = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-    # cv2.imshow("ImageWarped", img)
-    # cv2.waitKey(0)
     return img
 
 
@@ -151,38 +113,6 @@ def getWarp(img, biggest):
 
     return imgCropped
 
-    # def stackImages(scale, imgArray):
-    rows = len(imgArray)
-    cols = len(imgArray[0])
-    rowsAvailable = isinstance(imgArray[0], list)
-    width = imgArray[0][0].shape[1]
-    height = imgArray[0][0].shape[0]
-    if rowsAvailable:
-        for x in range(0, rows):
-            for y in range(0, cols):
-                if imgArray[x][y].shape[:2] == imgArray[0][0].shape[:2]:
-                    imgArray[x][y] = cv2.resize(imgArray[x][y], (0, 0), None, scale, scale)
-                else:
-                    imgArray[x][y] = cv2.resize(imgArray[x][y], (imgArray[0][0].shape[1], imgArray[0][0].shape[0]),
-                                                None, scale, scale)
-                if len(imgArray[x][y].shape) == 2: imgArray[x][y] = cv2.cvtColor(imgArray[x][y], cv2.COLOR_GRAY2BGR)
-        imageBlank = np.zeros((height, width, 3), np.uint8)
-        hor = [imageBlank] * rows
-        hor_con = [imageBlank] * rows
-        for x in range(0, rows):
-            hor[x] = np.hstack(imgArray[x])
-        ver = np.vstack(hor)
-    else:
-        for x in range(0, rows):
-            if imgArray[x].shape[:2] == imgArray[0].shape[:2]:
-                imgArray[x] = cv2.resize(imgArray[x], (0, 0), None, scale, scale)
-            else:
-                imgArray[x] = cv2.resize(imgArray[x], (imgArray[0].shape[1], imgArray[0].shape[0]), None, scale, scale)
-            if len(imgArray[x].shape) == 2: imgArray[x] = cv2.cvtColor(imgArray[x], cv2.COLOR_GRAY2BGR)
-        hor = np.hstack(imgArray)
-        ver = hor
-    return ver
-
 
 def correct_skew(image, delta=1, limit=5):
     def determine_score(arr, angle):
@@ -207,7 +137,4 @@ def correct_skew(image, delta=1, limit=5):
     M = cv2.getRotationMatrix2D(center, best_angle, 1.0)
     corrected = cv2.warpAffine(image, M, (w, h), flags=cv2.INTER_CUBIC,
                                borderMode=cv2.BORDER_REPLICATE)
-    #cv2.imshow("ImageWarped", image)
-    #cv2.imshow("ImageWad", corrected)
-    #cv2.waitKey(0)
     return best_angle, corrected
