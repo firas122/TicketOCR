@@ -35,7 +35,7 @@ def pattrIdeal(x):
             if re.search(r'TOTAL', line):
                 # print('********************************')
                 # print('************* total ************* ')
-                total = re.findall("\d+[,\.]\d+", line)
+                total = re.findall(r"\d+[,\.]\d+", line)
                 #print(total)
                 # print('********************************\n\n ')
 
@@ -242,8 +242,8 @@ def pattraziza(x):
             if re.search(r'RENDU', line):
                 print('*********  rest  ****************** ')
                 print(line)
-                rst = re.findall("\d{2,4}", line)
-                rst = re.findall("\d{1,3}[.,\W]*\d{3}", line)
+                rst = re.findall(r"\d{2,4}", line)
+                rst = re.findall(r"\d{1,3}[.,\W]*\d{3}", line)
                 print('********************************\n\n\n ')
             if re.search(r'[0-9][0-9]:[0-9][0-9]', line):
                 x = re.search(r'[0-9][0-9]:[0-9][0-9]', line)
@@ -304,7 +304,7 @@ def pattraziza(x):
                 if re.search(r'RENDU', line):
                     print('*********  rest  ****************** ')
                     print(line)
-                    rst = re.findall("\d{1,3}[.,\W]*\d{3}", line)
+                    rst = re.findall(r"\d{1,3}[.,\W]*\d{3}", line)
                 if re.search(r'[0-9][0-9]:[0-9][0-9]', line):
                     x = re.search(r'[0-9][0-9]:[0-9][0-9]', line)
                     print('*********  time ****************** ')
@@ -361,8 +361,8 @@ def pattrcitymarket(x):
             if re.search(r'RENDU', line):
                 # print('*********  rest  ****************** ')
                 # print(line)
-                rst = re.findall("\d{2,4}", line)
-                rst = re.findall("\d{1,3}[.,\W]*\d{3}", line)
+                rst = re.findall(r"\d{2,4}", line)
+                rst = re.findall(r"\d{1,3}[.,\W]*\d{3}", line)
 
             if re.search(r'[0-9][0-9]:[0-9][0-9]', line):
                 x = re.search(r'[0-9][0-9]:[0-9][0-9]', line)
