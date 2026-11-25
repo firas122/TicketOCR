@@ -21,7 +21,7 @@ def autocorrect(tup):
     for i in range(a):
         p.append(products[i]["name"])
         print(p[i])
-    for i in range(len(tup) - 1):
+    for i in range(len(tup)):
         highest = process.extractOne(tup[i]['pname'], p)
         print(tup[i]['pname'])
         print('highest match', highest)
