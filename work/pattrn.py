@@ -163,7 +163,6 @@ def pattrcarrf(x):
     d = tim = ''
     print('*********** products ******************')
     l = x.splitlines()
-    print(l[0])
     n = len(l)
     for i in range(0, n-1):
 
@@ -179,7 +178,7 @@ def pattrcarrf(x):
                 else:
                     break
             if re.search(r'([0-9][0-9]/[0-9][0-9]/[0-9][0-9][0-9][0-9])', l[i]):
-                x = re.search(r'(\d+/\d+)', l[i])
+                x = re.search(r'\d+/\d+/\d+', l[i])
                 print('*************  date ****************** ')
                 print(x.group())
                 if x.group():
@@ -196,7 +195,7 @@ def pattrcarrf(x):
             print('********************************\n ')
             s = re.split(r'\d{1,2}[,.]', prod[i])
             print('product name : ', s[0])
-            n = s[0]
+            n = re.sub(r'^\d+\s+', '', s[0])
             s = re.split(r'\s', prod[i])
 
             try:
@@ -205,17 +204,15 @@ def pattrcarrf(x):
                 q = s[0]
             print('Quantity : ', q)
             try:
-                upri = float(s[len(s) - 1])
+                upri = float(s[len(s) - 1].replace(',', '.'))
             except:
                 upri = s[len(s) - 1]
             print('unit price : ', upri)
 
             try:
-                totalp = totalp + q*upri
-
-            except:
-
-                totalp = totalp + 0
+                totalp = float(q * upri)
+            except (TypeError, ValueError):
+                totalp = 0
 
             total = total + totalp
             l = prodline(n, q, upri, totalp)
