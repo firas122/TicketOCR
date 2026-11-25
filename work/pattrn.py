@@ -392,14 +392,12 @@ def pattrcitymarket(x):
                 q = int(s[0])
             except:
                 q = s[0]
-            s = re.split(r'\d{1,3}[.,\W]*\d{3}', s[1], 1)
-            print('name : ', s[len(s) - 2])
-            name = s[len(s) - 2]
-            print('unit price : ', s[len(s) - 1])
-            try:
-                upri = float(s[len(s) - 1].replace(',', '.'))
-            except:
-                upri = s[len(s) - 1].replace(',', '.')
+            price = re.search(r'\d{1,3}[.,\W]*\d{3}', s[1])
+            name = s[1][:price.start()]
+            print('name : ', name)
+            # OCR may read the decimal separator as ',', '. ' or a space
+            upri = float(re.sub(r'\D+', '.', price.group()))
+            print('unit price : ', upri)
 
             try:
                 totalp = upri * q
