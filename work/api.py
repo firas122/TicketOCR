@@ -33,6 +33,8 @@ def home():
                     "email":user_email,"date_naissance":user_date_naissance,"genre":user_genre}
 
         resultTraitement = ocr.traitement(p)
+        if resultTraitement is None:
+            return {"E0012": "store not recognised on this ticket"}, 422
         if hash(resultTraitement) in dictionnary.keys():
             return ({"Error122":"Ticket is already scanned"})
         else:

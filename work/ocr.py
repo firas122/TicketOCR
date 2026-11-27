@@ -40,6 +40,7 @@ def traitement(path):
     x4 = pytesseract.image_to_string(pimg2, lang='eng+fra', config=custom_config)
     x5 = pytesseract.image_to_string(pimg3, lang='eng+fra', config=custom_config)
     x6 = extract.treat(path)
+    r = None
     searchObj1 = re.search(r'MONOPR', x1)
     searchObj2 = re.search(r'MONOPR', x2)
     searchObj3 = re.search(r'MONOPR', x3)
