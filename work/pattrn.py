@@ -23,7 +23,7 @@ class tickt:
 
     def __hash__(self):
         # print('The hash is:')
-        return hash((self.name, self.total, str(self.tup), self.date, self.total))
+        return hash((self.name, self.total, str(self.tup), self.date, self.time))
 
 def pattrIdeal(x):
     prod = []
