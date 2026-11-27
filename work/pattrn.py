@@ -232,8 +232,8 @@ def pattraziza(x):
     d = tim = ''
     print('*********** products ******************')
     for line in x.splitlines():
-        searchObj1 = re.match(r'[a-zA-Z\d{2,4}ÉÈÊ\W\sÀÁÂÄOEÚÙ]*[=]\s\W*\d{1,3}[.]\d{3}', line)
-        searchObj2 = re.match(r'[a-zA-Z\d{2,4}ÉÈÊ\W\sÀÁÂÄOEÚÙ]*\d{1,3}[xX]\s\d{1,3}[.,]\d{3}\s[=]\s\d{1,3}[.]\d{3}', line)
+        searchObj1 = re.match(r'[a-zA-Z\d{2,4}ÉÈÊ\W\sÀÁÂÄOEÚÙ]*[=]\s\W*\d{1,3}[.,]\d{3}', line)
+        searchObj2 = re.match(r'[a-zA-Z\d{2,4}ÉÈÊ\W\sÀÁÂÄOEÚÙ]*\d{1,3}[xX]\s\d{1,3}[.,]\d{3}\s[=]\s\d{1,3}[.,]\d{3}', line)
 
         if searchObj2:
             if re.search(r'RENDU', line):
@@ -321,7 +321,7 @@ def pattraziza(x):
 
 
                 for i in range(k, len(prod)):
-                    name = re.search(r'[a-zA-Z\d{2,3}ÉÈÊ\sÀÁÂÄOEÚÙ]*[=]\s\W*\d{1,3}[.]\d{3}', prod[i])
+                    name = re.search(r'[a-zA-Z\d{2,3}ÉÈÊ\sÀÁÂÄOEÚÙ]*[=]\s\W*\d{1,3}[.,]\d{3}', prod[i])
                     if name:
                         print('********************************\n ')
                         s = re.split(r'=', prod[i])
